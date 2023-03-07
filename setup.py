@@ -35,7 +35,6 @@ setuptools.setup(
     ],
     python_requires=">=3.7.*",
     install_requires=[
-        "hippunfold_toolbox @ git+git://github.com/jordandekraker/hippunfold_toolbox.git#egg=hippunfold_toolbox"
         "nibabel",
         "mpl_toolkits",
         "numpy>=1.16.5",
