@@ -8,17 +8,17 @@ import warnings
 
 def spin_test(imgfix,imgperm,nperm,metric='pearson'):
 
-    '''interpolates data from one surface density onto another via unfolded space
+    '''Permutation testing of unfolded hippocampus maps
     Inputs:
-      imgfix: path to the fixed map for spin testing
-      imgperm: path to the map which wll be permuted for spin testing
+      imgfix: path to the fixed map
+      imgperm: path to the map which wll be permuted
       nperm: Number of permutations to perform
       metric: Metric for comparing maps (one of pearson, spearman, adjusted rand, adjusted mutual info)
     Outputs: 
       metricnull: null distribution of metric
-      permutedimg: All permuted spatial map
-      pval: p-value based on metricnull and observed metric association
-      r_obs: The observed association between the two aligned maps'''
+      permutedimg: All permuted spatial maps
+      r_obs: The observed association between the two aligned maps
+      pval: p-value based on metricnull r_obs'''
 
 
     fixedimg = nib.load(imgfix)
