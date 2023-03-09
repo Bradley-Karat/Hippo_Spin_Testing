@@ -26,10 +26,10 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson'):
     permimg = nib.load(imgperm)
     permimgdata = permimg.agg_data()
 
-    fixedimgvertnum = np.max(fixedimgdata.shape)
+    fixedimgvertnum = np.max(fixedimgdata.shape) #number of vertices
     permimgvertnum = np.max(permimgdata.shape)
 
-    if fixedimgvertnum != permimgvertnum:
+    if fixedimgvertnum != permimgvertnum: #maps don't have to be the same size because they both get interpolated to same density
         warnings.warn("Warning fixed and permuted map not the same size. Program will continue to interpolation")
 
     vertexnumber = [7262,2004,419] #corresponds to 0p5mm, 1mm, and 2mm respectively
@@ -38,12 +38,12 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson'):
     if fixedimgvertnum not in vertexnumber or permimgvertnum not in vertexnumber:
         raise ValueError(f"Surface number of vertices must be one of {vertexnumber}.")
     else:
-        fixind = vertexnumber.index(fixedimgvertnum)
+        fixind = vertexnumber.index(fixedimgvertnum) #find the surface spacing which corresponds to the vertex number of that map
         permind = vertexnumber.index(permimgvertnum)
-        imgfixinterp = interpolate_densities.density_interp(surfacespacing[fixind], 'unfoldiso', fixedimgdata, method='nearest')[0]
-        imgfixinterp = np.reshape(imgfixinterp,(126,254))#get maps to 124x256
+        imgfixinterp = interpolate_densities.density_interp(surfacespacing[fixind], 'unfoldiso', fixedimgdata, method='nearest')[0] #interpolate to unfoldiso density
+        imgfixinterp = np.reshape(imgfixinterp,(126,254))#get maps to 126x254
         imgperminterp = interpolate_densities.density_interp(surfacespacing[permind], 'unfoldiso', permimgdata, method='nearest')[0]
-        imgperminterp = np.reshape(imgperminterp,(126,254))#get maps to 124x256
+        imgperminterp = np.reshape(imgperminterp,(126,254))#get maps to 126x254
 
 
     rotation = np.random.randint(1,360,nperm) #generate random rotations
@@ -55,16 +55,16 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson'):
     metricnull = np.empty((nperm))
 
     for ii in range(nperm):
-        rotimg = rotate(imgperminterp, rotation[ii], axes=(1, 0), reshape=False, output=None, order=3, mode='wrap', cval=0.0, prefilter=True)
-        transrotimg = shift(rotimg, [translate1[ii],translate2[ii]], output=None, order=3, mode='wrap', cval=0.0, prefilter=True)
-        permutedimg[:,:,ii] = transrotimg
+        rotimg = rotate(imgperminterp, rotation[ii], axes=(1, 0), reshape=False, output=None, order=3, mode='wrap', cval=0.0, prefilter=True) #rotate image
+        transrotimg = shift(rotimg, [translate1[ii],translate2[ii]], output=None, order=3, mode='wrap', cval=0.0, prefilter=True) #translate image
+        permutedimg[:,:,ii] = transrotimg #this is our permuted image
         
     if metric=='pearson':
         from scipy.stats import pearsonr
-        r_obs = pearsonr(imgfixinterp.flatten(),imgperminterp.flatten())[0]
+        r_obs = pearsonr(imgfixinterp.flatten(),imgperminterp.flatten())[0] #observed correspondance when maps are anatomically aligned
         for ii in range(nperm):
             imgpermflat = permutedimg[:,:,ii].flatten()
-            metricnull[ii] = pearsonr(imgfixinterp.flatten(),imgpermflat)[0]
+            metricnull[ii] = pearsonr(imgfixinterp.flatten(),imgpermflat)[0] #null distribution of correspondance between permuted and fixed map
     elif metric=='spearman':
             from scipy.stats import spearmanr
             r_obs = spearmanr(imgfixinterp.flatten(),imgperminterp.flatten())[0]
@@ -84,6 +84,6 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson'):
             imgpermflat = permutedimg[:,:,ii].flatten()
             metricnull[ii] = (imgfixinterp.flatten(),imgpermflat)           
 
-    pval = np.mean(np.abs(metricnull) >= np.abs(r_obs))
+    pval = np.mean(np.abs(metricnull) >= np.abs(r_obs)) #p-value is the sum of all instances where null correspondance is >= observed correspondance / nperm
                 
     return metricnull,permutedimg,pval,r_obs
