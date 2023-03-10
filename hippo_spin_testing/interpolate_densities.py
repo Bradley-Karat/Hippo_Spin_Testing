@@ -3,6 +3,7 @@ from scipy.interpolate import griddata
 from scipy.interpolate import NearestNDInterpolator
 import nibabel as nib
 from hippo_spin_testing import fill_nans
+import os
 
 #From the hippunfold_toolbox by Jordan DeKraker (https://github.com/jordandekraker/hippunfold_toolbox)
 
@@ -23,10 +24,12 @@ def density_interp(indensity, outdensity, cdata, method='nearest'):
     if outdensity not in VALID_STATUS:
         raise ValueError("results: outdensity must be one of %r." % VALID_STATUS)
     
+    file_path = os.path.realpath(__file__) #find path to this file
+    parent_path = os.path.dirname(os.path.dirname(file_path)) #Find path to parent directory above this file
     # load unfolded surfaces for topological matching
-    startsurf = nib.load(f'resources/tpl-avg_space-unfold_den-{indensity}_midthickness.surf.gii')
+    startsurf = nib.load(f'{parent_path}/resources/tpl-avg_space-unfold_den-{indensity}_midthickness.surf.gii')
     vertices_start = startsurf.get_arrays_from_intent('NIFTI_INTENT_POINTSET')[0].data
-    targetsurf = nib.load(f'resources/tpl-avg_space-unfold_den-{outdensity}_midthickness.surf.gii')
+    targetsurf = nib.load(f'{parent_path}/resources/tpl-avg_space-unfold_den-{outdensity}_midthickness.surf.gii')
     vertices_target = targetsurf.get_arrays_from_intent('NIFTI_INTENT_POINTSET')[0].data
     faces = targetsurf.get_arrays_from_intent('NIFTI_INTENT_TRIANGLE')[0].data
 
