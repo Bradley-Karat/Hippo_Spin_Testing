@@ -36,7 +36,6 @@ setuptools.setup(
     python_requires=">=3.7.*",
     install_requires=[
         "nibabel",
-        "mpl_toolkits",
         "numpy>=1.16.5",
         "scipy>=1.3.3",
         "matplotlib>=2.0.0",
