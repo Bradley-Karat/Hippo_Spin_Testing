@@ -1,0 +1,8 @@
+README.md
+setup.py
+Hippo_Spin_Testing.egg-info/PKG-INFO
+Hippo_Spin_Testing.egg-info/SOURCES.txt
+Hippo_Spin_Testing.egg-info/dependency_links.txt
+Hippo_Spin_Testing.egg-info/not-zip-safe
+Hippo_Spin_Testing.egg-info/requires.txt
+Hippo_Spin_Testing.egg-info/top_level.txt

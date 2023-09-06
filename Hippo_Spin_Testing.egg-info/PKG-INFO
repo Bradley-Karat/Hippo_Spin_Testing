@@ -1,0 +1,28 @@
+Metadata-Version: 2.1
+Name: Hippo-Spin-Testing
+Version: 0.0.1
+Summary: A tool for spin permutation testing using HippUnfold
+Home-page: https://github.com/Bradley-Karat/Hippo_Spin_Testing
+Author: Bradley Karat
+Author-email: bradleykarat@gmail.com
+License: BSD 3-Clause License
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: Scientific/Engineering
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.7
+Description-Content-Type: text/x-rst
+
+# Hippocampus Spin Testing
+Spin testing implemented in the hippocampus using [HippUnfold](https://github.com/khanlab/hippunfold). See the example_spintest.ipynb file for a brief demonstration on how to perform the spin testing.
+## Relevant Publication:
+Karat, B. G., DeKraker, J., Hussain, U., Köhler, S., &amp; Khan, A. R. (2023). Mapping the macrostructure and microstructure of the in vivo human hippocampus using diffusion MRI. Human Brain Mapping. https://doi.org/10.1002/hbm.26461
+- See the supplemental document 1 in the above manuscript for more background information on the developed spin test. 
+## Installation
+```
+git clone https://github.com/Bradley-Karat/Hippo_Spin_Testing.git
+pip install -e Hippo_Spin_Testing/
+```
