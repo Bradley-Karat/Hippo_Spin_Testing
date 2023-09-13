@@ -10,8 +10,8 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson',space='orig'):
 
     '''Permutation testing of unfolded hippocampus maps
     Inputs:
-      imgfix: path to the fixed map
-      imgperm: path to the map which wll be permuted
+      imgfix: Fixed map (path or loaded in data)
+      imgperm: Map which will be permuted (path or loaded in data)
       nperm: Number of permutations to perform
       metric: Metric for comparing maps (one of pearson, spearman, adjusted rand, or adjusted mutual info)
       space: Space the correlation will be performed in. If 'orig' will perform 
@@ -23,12 +23,16 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson',space='orig'):
       permutedimg: All permuted spatial maps at 'unfoldiso' density
       r_obs: The observed association between the two aligned maps
       pval: p-value based on metricnull r_obs'''
-
-    fixedimg = nib.load(imgfix)
-    fixedimgdata = fixedimg.agg_data()
-    permimg = nib.load(imgperm)
-    permimgdata = permimg.agg_data()
-
+    if type(imgfix) == str:
+        fixedimg = nib.load(imgfix)
+        fixedimgdata = fixedimg.agg_data()
+    else:
+        fixedimgdata = imgfix
+    if type(imgperm) == str:
+        permimg = nib.load(imgperm)
+        permimgdata = permimg.agg_data()
+    else:
+        permimgdata = imgperm
     fixedimgvertnum = np.max(fixedimgdata.shape) #number of vertices
     permimgvertnum = np.max(permimgdata.shape)
 
