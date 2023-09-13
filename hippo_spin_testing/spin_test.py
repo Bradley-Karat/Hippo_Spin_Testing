@@ -10,8 +10,8 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson',space='orig'):
 
     '''Permutation testing of unfolded hippocampus maps
     Inputs:
-      imgfix: path to the fixed map
-      imgperm: path to the map which wll be permuted
+      imgfix: Fixed map (path or loaded in data)
+      imgperm: Map which will be permuted (path or loaded in data)
       nperm: Number of permutations to perform
       metric: Metric for comparing maps (one of pearson, spearman, adjusted rand, or adjusted mutual info)
       space: Space the correlation will be performed in. If 'orig' will perform 
