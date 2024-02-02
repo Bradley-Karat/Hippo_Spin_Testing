@@ -10,8 +10,8 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson',space='orig'):
 
     '''Permutation testing of unfolded hippocampus maps
     Inputs:
-      imgfix: path to the fixed map
-      imgperm: path to the map which wll be permuted
+      imgfix: Fixed map (path or loaded in data)
+      imgperm: Map which will be permuted (path or loaded in data)
       nperm: Number of permutations to perform
       metric: Metric for comparing maps (one of pearson, spearman, adjusted rand, or adjusted mutual info)
       space: Space the correlation will be performed in. If 'orig' will perform 
@@ -23,34 +23,42 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson',space='orig'):
       permutedimg: All permuted spatial maps at 'unfoldiso' density
       r_obs: The observed association between the two aligned maps
       pval: p-value based on metricnull r_obs'''
-
-    fixedimg = nib.load(imgfix)
-    fixedimgdata = fixedimg.agg_data()
-    permimg = nib.load(imgperm)
-    permimgdata = permimg.agg_data()
-
+    if type(imgfix) == str:
+        fixedimg = nib.load(imgfix)
+        fixedimgdata = fixedimg.agg_data()
+    else:
+        fixedimgdata = imgfix
+    if type(imgperm) == str:
+        permimg = nib.load(imgperm)
+        permimgdata = permimg.agg_data()
+    else:
+        permimgdata = imgperm
     fixedimgvertnum = np.max(fixedimgdata.shape) #number of vertices
     permimgvertnum = np.max(permimgdata.shape)
 
-    if fixedimgvertnum != permimgvertnum: #maps don't have to be the same size because they both get interpolated to same density
-        warnings.warn("Warning fixed and permuted map not the same size. Program will continue to interpolation")
-
-    vertexnumber = [7262,2004,419] #corresponds to 0p5mm, 1mm, and 2mm respectively
-    surfacespacing = ['0p5mm', '1mm', '2mm']
+    vertexnumber = [32004,7262,2004,419] #corresponds to unfoldiso, 0p5mm, 1mm, and 2mm respectively
+    surfacespacing = ['unfoldiso','0p5mm', '1mm', '2mm']
 
     if fixedimgvertnum not in vertexnumber or permimgvertnum not in vertexnumber:
         raise ValueError(f"Surface number of vertices must be one of {vertexnumber}.")
     else:
         permind = vertexnumber.index(permimgvertnum)
-        imgperminterp = interpolate_densities.density_interp(surfacespacing[permind], 'unfoldiso', permimgdata, method='nearest')[0]
-        imgperminterp = np.reshape(imgperminterp,(126,254))#get maps to 126x254
+        fixind = vertexnumber.index(fixedimgvertnum) #find the surface spacing which corresponds to the vertex number of that map
+        if surfacespacing[permind] == 'unfoldiso': #already at unfold iso, dont interpolate
+            imgperminterp = permimgdata
+            imgperminterp = np.reshape(imgperminterp,(126,254))#get maps to 126x254
+        else:
+            imgperminterp = interpolate_densities.density_interp(surfacespacing[permind], 'unfoldiso', permimgdata, method='nearest')[0]
+            imgperminterp = np.reshape(imgperminterp,(126,254))#get maps to 126x254
         if space=='unfoldiso': #if unfoldiso, then need to interpolate fixed image to unfoldiso for correlation
-            fixind = vertexnumber.index(fixedimgvertnum) #find the surface spacing which corresponds to the vertex number of that map
             imgfixobs = interpolate_densities.density_interp(surfacespacing[fixind], 'unfoldiso', fixedimgdata, method='nearest')[0] #interpolate to unfoldiso density
             imgpermobs = imgperminterp.flatten()
             permutedimg = np.empty((126*254,nperm))
-        elif space=='orig': #if orig, then correlations performed at original density, no need to interpolate fixed image
-            imgfixobs = fixedimgdata
+        elif space=='orig': #if orig, then correlations performed at original density, need to check that 
+            if fixedimgvertnum != permimgvertnum: #if two maps not the same size, need to interpolate for comparison
+                imgfixobs = interpolate_densities.density_interp(surfacespacing[fixind], surfacespacing[permind], fixedimgdata, method='nearest')[0] #interpolate to unfoldiso density
+            else:
+                imgfixobs = fixedimgdata
             imgpermobs = permimgdata
             permutedimg = np.empty((permimgvertnum,nperm))
 
