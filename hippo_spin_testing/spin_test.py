@@ -21,8 +21,9 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson',space='orig'):
     Outputs: 
       metricnull: null distribution of metric
       permutedimg: All permuted spatial maps at 'unfoldiso' density
+      pval: p-value based on metricnull r_obs
       r_obs: The observed association between the two aligned maps
-      pval: p-value based on metricnull r_obs'''
+      '''
     if type(imgfix) == str:
         fixedimg = nib.load(imgfix)
         fixedimgdata = fixedimg.agg_data()
