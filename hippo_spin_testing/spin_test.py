@@ -107,4 +107,4 @@ def spin_test(imgfix,imgperm,nperm,metric='pearson',space='orig'):
 
     pval = np.mean(np.abs(metricnull) >= np.abs(r_obs)) #p-value is the sum of all instances where null correspondance is >= observed correspondance / nperm
                 
-    return metricnull,permutedimgiso,pval,r_obs
+    return metricnull,permutedimg,pval,r_obs
